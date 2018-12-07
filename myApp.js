@@ -11,7 +11,9 @@
 // Add `mongodb` and `mongoose` to the project's `package.json`. Then require 
 // `mongoose`. Store your **mLab** database URI in the private `.env` file 
 // as `MONGO_URI`. Connect to the database using `mongoose.connect(<Your URI>)`
+const mongoose = require('mongoose');
 
+mongoose.connect(process.env.MONGO_URI, { useNewUrlParser: true });
 
 /** # SCHEMAS and MODELS #
 /*  ====================== */
@@ -38,9 +40,17 @@
 
 // <Your code here >
 
-var Person /* = <Your Model> */
+var Schema = mongoose.Schema;
 
-// **Note**: GoMix is a real server, and in real servers interactions with
+var personSchema = new Schema({
+  name: { type: String, required: true },
+  age: Number,
+  favoriteFoods: [String]
+});
+
+var Person = mongoose.model('Person', personSchema); /* = <Your Model> */
+
+// **Note**: Glitch is a real server, and in real servers interactions with
 // the db are placed in handler functions, to be called when some event happens
 // (e.g. someone hits an endpoint on your API). We'll follow the same approach
 // in these exercises. The `done()` function is a callback that tells us that
@@ -61,7 +71,7 @@ var Person /* = <Your Model> */
 
 /** 3) Create and Save a Person */
 
-// Create a `document` instance using the `Person` constructor you build before.
+// Create a `document` instance using the `Person` constructor you built before.
 // Pass to the constructor an object having the fields `name`, `age`,
 // and `favoriteFoods`. Their types must be conformant to the ones in
 // the Person `Schema`. Then call the method `document.save()` on the returned
@@ -76,9 +86,12 @@ var Person /* = <Your Model> */
 // });
 
 var createAndSavePerson = function(done) {
-  
-  done(null /*, data*/);
-
+  let person = new Person({
+    name: 'Name',
+    age: '20',
+    favoriteFoods: ['favoriteFood1', 'favoriteFood2']
+  });
+  person.save((err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** 4) Create many People with `Model.create()` */
@@ -91,9 +104,7 @@ var createAndSavePerson = function(done) {
 // 'arrayOfPeople'.
 
 var createManyPeople = function(arrayOfPeople, done) {
-    
-    done(null/*, data*/);
-    
+    Person.create(arrayOfPeople, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** # C[R]UD part II - READ #
@@ -103,14 +114,12 @@ var createManyPeople = function(arrayOfPeople, done) {
 
 // Find all the people having a given name, using `Model.find() -> [Person]`
 // In its simplest usage, `Model.find()` accepts a **query** document (a JSON
-// object ) as the first argument, and returns an **array** of matches.
+// object) as the first argument, and returns an **array** of matches.
 // It supports an extremely wide range of search options. Check it in the docs.
 // Use the function argument `personName` as search key.
 
 var findPeopleByName = function(personName, done) {
-  
-  done(null/*, data*/);
-
+  Person.find({ name: personName }, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** 6) Use `Model.findOne()` */
@@ -118,14 +127,12 @@ var findPeopleByName = function(personName, done) {
 // `Model.findOne()` behaves like `.find()`, but it returns **only one**
 // document, even if there are more. It is especially useful
 // when searching by properties that you have declared as unique.
-// Find just one person which has a certain food in her favorites,
+// Find just one person which has a certain food in his/her favorites,
 // using `Model.findOne() -> Person`. Use the function
 // argument `food` as search key
 
 var findOneByFood = function(food, done) {
-
-  done(null/*, data*/);
-  
+  Person.findOne({ favoriteFoods: food }, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** 7) Use `Model.findById()` */
@@ -138,9 +145,7 @@ var findOneByFood = function(food, done) {
 // Use the function argument 'personId' as search key.
 
 var findPersonById = function(personId, done) {
-  
-  done(null/*, data*/);
-  
+  Person.findById(personId, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** # CR[U]D part III - UPDATE # 
@@ -151,14 +156,14 @@ var findPersonById = function(personId, done) {
 // In the good old days this was what you needed to do if you wanted to edit
 // a document and be able to use it somehow e.g. sending it back in a server
 // response. Mongoose has a dedicated updating method : `Model.update()`,
-// which is directly binded to the low-level mongo driver.
+// which is directly bound to the low-level mongo driver.
 // It can bulk edit many documents matching certain criteria, but it doesn't
 // pass the edited document to its callback, only a 'status' message.
 // Furthermore it makes validation difficult, because it just
 // direcly calls the mongodb driver.
 
-// Find a person by Id ( use any of the above methods ) with the parameter
-// `personId` as search key. Add "hamburger" to the list of her `favoriteFoods`
+// Find a person by Id (use any of the above methods) with the parameter
+// `personId` as search key. Add "hamburger" to the list of his/her `favoriteFoods`
 // (you can use Array.push()). Then - **inside the find callback** - `.save()`
 // the updated `Person`.
 
@@ -171,7 +176,14 @@ var findPersonById = function(personId, done) {
 var findEditThenSave = function(personId, done) {
   var foodToAdd = 'hamburger';
   
-  done(null/*, data*/);
+  Person.findById(personId, function(err, data) {
+    if (err) {
+      return done(err);
+    } else {
+      data['favoriteFoods'].push(foodToAdd);
+      data.save((err, data) => (err ? done(err) : done(null, data)));
+    }
+  });
 };
 
 /** 9) New Update : Use `findOneAndUpdate()` */
@@ -181,7 +193,7 @@ var findEditThenSave = function(personId, done) {
 // differently with this approach, so the 'Classic' method is still useful in
 // many situations. `findByIdAndUpdate()` can be used when searching by Id.
 //
-// Find a person by `name` and set her age to `20`. Use the function parameter
+// Find a person by `name` and set his/her age to `20`. Use the function parameter
 // `personName` as search key.
 //
 // Hint: We want you to return the **updated** document. In order to do that
@@ -192,7 +204,7 @@ var findEditThenSave = function(personId, done) {
 var findAndUpdate = function(personName, done) {
   var ageToSet = 20;
 
-  done(null/*, data*/);
+  Person.findOneAndUpdate({ name: personName }, { $set: { age: ageToSet }}, { new: true }, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** # CRU[D] part IV - DELETE #
@@ -200,15 +212,13 @@ var findAndUpdate = function(personName, done) {
 
 /** 10) Delete one Person */
 
-// Delete one person by her `_id`. You should use one of the methods
+// Delete one person by his/her `_id`. You should use one of the methods
 // `findByIdAndRemove()` or `findOneAndRemove()`. They are similar to the
 // previous update methods. They pass the removed document to the cb.
 // As usual, use the function argument `personId` as search key.
 
 var removeById = function(personId, done) {
-  
-  done(null/*, data*/);
-    
+  Person.findByIdAndRemove(personId, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** 11) Delete many People */
@@ -224,7 +234,7 @@ var removeById = function(personId, done) {
 var removeManyPeople = function(done) {
   var nameToRemove = "Mary";
 
-  done(null/*, data*/);
+  Person.remove({ name: nameToRemove }, (err, data) => (err ? done(err) : done(null, data)));
 };
 
 /** # C[R]UD part V -  More about Queries # 
@@ -248,20 +258,20 @@ var removeManyPeople = function(done) {
 var queryChain = function(done) {
   var foodToSearch = "burrito";
   
-  done(null/*, data*/);
+  Person.find({ favoriteFoods: foodToSearch }).sort({ name: 'asc' }).limit(2).select({ age: 0 }).exec((err, data) => (err ? done(err) : done(null, data)));
 };
 
-/** **Well Done !!**
-/* You completed these challenges, let's go celebrate !
+/** **Well Done!!**
+/* You completed these challenges, let's go celebrate!
  */
 
 /** # Further Readings... #
 /*  ======================= */
 // If you are eager to learn and want to go deeper, You may look at :
-// * Indexes ( very important for query efficiency ),
+// * Indexes (very important for query efficiency),
 // * Pre/Post hooks,
 // * Validation,
-// * Schema Virtuals and  Model, Static, and Instance methods,
+// * Schema Virtuals and Model, Static, and Instance methods,
 // * and much more in the [mongoose docs](http://mongoosejs.com/docs/)
 
 
