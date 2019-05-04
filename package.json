@@ -1,4 +1,5 @@
 {
+	"author": "Adam",
 	"name": "fcc-mongo-mongoose-challenges",
 	"version": "0.0.1",
 	"description": "A boilerplate project",
@@ -17,7 +18,7 @@
 	},
 	"repository": {
 		"type": "git",
-		"url": "https://hyperdev.com/#!/project/welcome-project"
+		"url": "https://github.com/Adam777Z/freecodecamp-backend-part-3-mongodb-and-mongoose.git"
 	},
 	"keywords": [
 		"node",
