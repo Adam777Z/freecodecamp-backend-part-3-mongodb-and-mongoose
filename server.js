@@ -42,6 +42,8 @@ app.get('/', function(req, res) {
   res.sendFile(path.join(__dirname, 'views', 'index.html'));
 });
 
+app.use('/public', express.static(process.cwd() + '/public'));
+
 router.get('/file/*?', function(req, res, next) {
   if(req.params[0] === '.env') { return next({status: 401, message: 'ACCESS DENIED'}) }
   fs.readFile(path.join(__dirname, req.params[0]), function(err, data){
