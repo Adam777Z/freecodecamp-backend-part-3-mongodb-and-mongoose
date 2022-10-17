@@ -1,29 +1,29 @@
 {
-  "name": "fcc-mongo-mongoose-challenges",
-  "description": "A boilerplate project",
-  "version": "1.0.0",
-  "author": "Adam",
-  "keywords": [
-    "node",
-    "express",
-    "freecodecamp"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/Adam777Z/freecodecamp-backend-part-3-mongodb-and-mongoose.git"
-  },
-  "license": "MIT",
-  "dependencies": {
-    "express": "^4.18.1",
-    "body-parser": "^1.20.0",
-    "mongodb": "^4.8.0",
-    "mongoose": "^6.5.0"
-  },
-  "main": "server.js",
-  "scripts": {
-    "start": "node server.js"
-  },
-  "engines": {
-    "node": ">=16.12.0"
-  }
+	"name": "fcc-mongo-mongoose-challenges",
+	"description": "A boilerplate project",
+	"version": "1.0.0",
+	"author": "Adam",
+	"keywords": [
+		"node",
+		"express",
+		"freecodecamp"
+	],
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/Adam777Z/freecodecamp-backend-part-3-mongodb-and-mongoose.git"
+	},
+	"license": "MIT",
+	"dependencies": {
+		"express": "^4.18.1",
+		"body-parser": "^1.20.0",
+		"mongodb": "^4.8.0",
+		"mongoose": "^6.5.0"
+	},
+	"main": "server.js",
+	"scripts": {
+		"start": "node server.js"
+	},
+	"engines": {
+		"node": ">=16.12.0"
+	}
 }
