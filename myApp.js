@@ -8,8 +8,8 @@
 
 /** 1) Install & Set up mongoose */
 
-// Add `mongodb` and `mongoose` to the project's `package.json`. Then require 
-// `mongoose`. Store your **MongoDB** database URI in the private `.env` file 
+// Add `mongodb` and `mongoose` to the project's `package.json`. Then require
+// `mongoose`. Store your **MongoDB** database URI in the private `.env` file
 // as `MONGO_URI`. Connect to the database using `mongoose.connect(<Your URI>)`
 const mongoose = require('mongoose');
 
@@ -50,7 +50,7 @@ var personSchema = new Schema({
 
 var Person = mongoose.model('Person', personSchema); /* = <Your Model> */
 
-// **Note**: Glitch is a real server, and in real servers interactions with
+// **Note**: This is a real server, and in real servers interactions with
 // the db are placed in handler functions, to be called when some event happens
 // (e.g. someone hits an endpoint on your API). We'll follow the same approach
 // in these exercises. The `done()` function is a callback that tells us that
@@ -76,7 +76,7 @@ var Person = mongoose.model('Person', personSchema); /* = <Your Model> */
 // and `favoriteFoods`. Their types must be conformant to the ones in
 // the Person `Schema`. Then call the method `document.save()` on the returned
 // document instance, passing to it a callback using the Node convention.
-// This is a common pattern, all the **CRUD** methods take a callback 
+// This is a common pattern, all the **CRUD** methods take a callback
 // function like this as the last argument.
 
 // - Example -
@@ -148,7 +148,7 @@ var findPersonById = function(personId, done) {
   Person.findById(personId, (err, data) => (err ? done(err) : done(null, data)));
 };
 
-/** # CR[U]D part III - UPDATE # 
+/** # CR[U]D part III - UPDATE #
 /*  ============================ */
 
 /** 8) Classic Update : Find, Edit then Save */
@@ -175,7 +175,7 @@ var findPersonById = function(personId, done) {
 
 var findEditThenSave = function(personId, done) {
   var foodToAdd = 'hamburger';
-  
+
   Person.findById(personId, function(err, data) {
     if (err) {
       return done(err);
@@ -237,7 +237,7 @@ var removeManyPeople = function(done) {
   Person.remove({ name: nameToRemove }, (err, data) => (err ? done(err) : done(null, data)));
 };
 
-/** # C[R]UD part V -  More about Queries # 
+/** # C[R]UD part V -  More about Queries #
 /*  ======================================= */
 
 /** 12) Chain Query helpers */
@@ -257,7 +257,7 @@ var removeManyPeople = function(done) {
 
 var queryChain = function(done) {
   var foodToSearch = "burrito";
-  
+
   Person.find({ favoriteFoods: foodToSearch }).sort({ name: 'asc' }).limit(2).select({ age: 0 }).exec((err, data) => (err ? done(err) : done(null, data)));
 };
 
